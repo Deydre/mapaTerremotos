@@ -1,4 +1,9 @@
+
+*{
+    padding: 0px;
+    margin: 0px;
+}
 #map {
-    height: 900px;
-    width: 900px
+    height: 80vh;
+    width: 100vw;
 }
