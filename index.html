@@ -10,22 +10,31 @@
     <link rel="stylesheet" href="./style.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-        <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-providers@latest/leaflet-providers.js"></script>
-    
+
 </head>
 
 <body>
-    <select name="select">
-        <option value="value1">Value 1</option>
-        <option value="value2" selected>Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
+    <div id="filtros">
+        <select id="selectMagnitud" name="selectMagnitud">
+            <option value="Empty" selected>Selecciona la magnitud</option>
+            <option value="0">Magnitud 0</option>
+            <option value="1">Magnitud 1</option>
+            <option value="2">Magnitud 2</option>
+            <option value="3">Magnitud 3</option>
+            <option value="4">Magnitud 4</option>
+            <option value="5">Magnitud 5</option>
+            <option value="6">Magnitud 6</option>
+            <option value="7">Magnitud 7</option>
+        </select>
+        <select id="selectFechas" name="selectFechas">
+            <option value="Empty">Selecciona un periodo de tiempo</option>
+        </select>
+    </div>
     <div id="map"></div>
 
 
-
-    
     <script src="./script.js"></script>
 </body>
 

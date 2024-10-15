@@ -1,5 +1,7 @@
 // navigator.geolocation.getCurrentPosition();
 //creamos vbles globales
+// ---- Variables locales no globales porque si no rompen los principios de encapsulación
+// ---- globales sólo las que usaremos en todo el código porque si no el return no tiene sentido
 let titulo;
 let fecha;
 let ubicacion;
@@ -8,6 +10,7 @@ let magnitud;
 let resultados;
 let fechaConv;
 
+// Si el navegador soporta la API de geolocalización
 if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(position => {
         console.log(`Latitud: ${position.coords.latitude}\nLongitud: ${position.coords.longitude}`);
@@ -16,25 +19,13 @@ if ("geolocation" in navigator) {
     console.warn("Tu navegador no soporta Geolocalización!! ");
 }
 
+// ---- SELECTORES (EJERCICIO 3 POR HACER)
+// Evento click papra guardar los values
+// Aplicar esos values a la variable que será el fetch
+// En vez del fetch poner variable
 
-// Obtener datos
-async function obtainData() {
-    let response = await fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson");
-    let data = await response.json();
-    resultados = data.features;
-    titulo = resultados.map(feature => feature.properties.title);
-    fecha = resultados.map(feature => feature.properties.time);
-    fechaConv = new Date(fecha).toString();
 
-    ubicacion = resultados.map(feature => feature.geometry.coordinates);
-    codigo = resultados.map(feature => feature.properties.code);
-    magnitud = resultados.map(feature => feature.properties.mag);
-
-    return { resultados, titulo, fecha, ubicacion, codigo, magnitud }
-
-}
-
-// Clase para crear iconos
+// Clase para crear iconos (Docu de Leaflet)
 let LeafIcon = L.Icon.extend({
     options: {
         iconUrl: '/media/0.png',
@@ -58,12 +49,33 @@ let icon7 = new LeafIcon({ iconUrl: '/media/7.png' });
 
 let varIcon;
 
+// Obtener datos sobre terremotos
+async function obtainData() {
+    let response = await fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson");
+    let data = await response.json();
+    resultados = data.features;
+    // Arrays de titulos, fechas, coordenadas, códigos y magnitudes
+    // ------- Refactorizar con el forEach en vez de tantos map
+    titulo = resultados.map(feature => feature.properties.title);
+    fecha = resultados.map(feature => feature.properties.time);
+    // Conversión a fecha legible
+    fechaConv = new Date(fecha).toString();
+    ubicacion = resultados.map(feature => feature.geometry.coordinates);
+    codigo = resultados.map(feature => feature.properties.code);
+    magnitud = resultados.map(feature => feature.properties.mag);
+
+    return { resultados, titulo, fecha, ubicacion, codigo, magnitud }
+
+}
+
+
 // Pintar en el DOM
-async function injectMap() {
+async function paintInMap() {
     await obtainData();
     console.log(fechaConv);
+    // Iterar sobre el array de ibucaciones
     for (let i = 0; i < ubicacion.length; i++) {
-
+        // Colocar icono por colores según magnitud
         magnitud[i] > 0 && magnitud[i] < 1 ? varIcon = icon0 : "";
         magnitud[i] > 1 && magnitud[i] < 2 ? varIcon = icon1 : "";
         magnitud[i] > 2 && magnitud[i] < 3 ? varIcon = icon2 : "";
@@ -73,6 +85,7 @@ async function injectMap() {
         magnitud[i] > 6 && magnitud[i] < 7 ? varIcon = icon6 : "";
         magnitud[i] > 7 && magnitud[i] < 8 ? varIcon = icon7 : "";
 
+        // Pop ups
         const marcadores = L.marker([ubicacion[i][1], ubicacion[i][0]], { icon: varIcon }).addTo(map)
         let popupContent = `<p>Título<br />${titulo[i]}</p>
                         <p>Ubicación<br />${[ubicacion[i]]}</p>
@@ -85,9 +98,9 @@ async function injectMap() {
 
 }
 
-injectMap();
+paintInMap();
 
-// MAPA
+// Pintar mapa
 var map = L.map('map').setView([28.666666666667, -17.866666666667], 1);
 
 L.tileLayer.provider('Stadia.AlidadeSmoothDark').addTo(map);
