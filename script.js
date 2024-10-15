@@ -14,6 +14,21 @@ let fechaConv;
 if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(position => {
         console.log(`Latitud: ${position.coords.latitude}\nLongitud: ${position.coords.longitude}`);
+
+        // Pintar mapa
+        var map0 = L.map("map0").setView([position.coords.latitude, position.coords.longitude], 13);
+
+        //Agregar capa de OpenStreetMap
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map0);
+
+        // Pop ups
+        const marcadores = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map0)
+        let popupContent = `<p>Estás aquí</p>`
+        marcadores.bindPopup(popupContent).openPopup()
+
     });
 } else {
     console.warn("Tu navegador no soporta Geolocalización!! ");
@@ -100,8 +115,11 @@ async function paintInMap() {
 
 paintInMap();
 
+
+
+
 // Pintar mapa
-var map = L.map('map').setView([28.666666666667, -17.866666666667], 1);
+var map = L.map('map').setView([28.666666666667, -17.866666666667], 3);
 
 L.tileLayer.provider('Stadia.AlidadeSmoothDark').addTo(map);
 var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
